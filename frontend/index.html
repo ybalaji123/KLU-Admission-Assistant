@@ -6,12 +6,12 @@
     <meta name="theme-color" content="#f8f8f6">
     <meta name="description" content="Ask questions about KLU admissions, programmes, fees, scholarships, and campus accommodation.">
     <title>KLU Admission Assistance</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="/" aria-label="KLU Admissions Assistant home">
-        <img class="brand-banner" src="/static/klu-banner.png" alt="Kalasalingam Academy of Research and Education, including its crest and founder portrait">
+        <img class="brand-banner" src="klu-banner.png" alt="Kalasalingam Academy of Research and Education, including its crest and founder portrait">
         <span class="brand-copy"><span>Admissions assistant</span></span>
       </a>
       <a class="apply-link" href="https://apply.kalasalingam.ac.in/" target="_blank" rel="noreferrer">Apply to KLU <span aria-hidden="true">↗</span></a>
@@ -25,14 +25,14 @@
 
       <section class="assistant-card" aria-label="Admissions chat">
         <div class="chat-heading">
-          <div class="heading-avatar" aria-hidden="true"><img src="/static/klu-logo.png" alt=""></div>
+          <div class="heading-avatar" aria-hidden="true"><img src="klu-logo.png" alt=""></div>
           <div class="heading-copy"><h2>KLU Admission Assistance</h2><p><span class="live-dot"></span><span id="statusText">Checking assistant…</span></p></div>
           <button id="clearButton" class="clear-button" type="button" aria-label="Clear conversation">Clear chat</button>
         </div>
 
         <div id="messages" class="messages" aria-live="polite" aria-label="Conversation">
           <article class="message assistant-message">
-            <div class="message-avatar" aria-hidden="true"><img src="/static/klu-logo.png" alt=""></div>
+            <div class="message-avatar" aria-hidden="true"><img src="klu-logo.png" alt=""></div>
             <div class="message-content"><p>Hi! I can help you explore KLU admissions. What would you like to know?</p></div>
           </article>
         </div>
@@ -59,6 +59,7 @@
         <a href="tel:+917397760760">+91 7397760760</a>
       </footer>
     </main>
-    <script src="/static/app.js" defer></script>
+    <script src="config.js" defer></script>
+    <script src="app.js" defer></script>
   </body>
 </html>

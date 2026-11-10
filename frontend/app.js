@@ -4,6 +4,7 @@ const messages = document.querySelector('#messages');
 const sendButton = document.querySelector('#sendButton');
 const statusText = document.querySelector('#statusText');
 const clearButton = document.querySelector('#clearButton');
+const API_BASE_URL = (window.KLU_API_BASE_URL || '').replace(/\/+$/, '');
 
 const history = [];
 let busy = false;
@@ -127,7 +128,7 @@ function addMessage(role, content, sources = [], isTyping = false) {
     avatar.className = 'message-avatar';
     avatar.setAttribute('aria-hidden', 'true');
     const logo = document.createElement('img');
-    logo.src = '/static/klu-logo.png';
+    logo.src = 'klu-logo.png';
     logo.alt = '';
     avatar.append(logo);
     article.append(avatar);
@@ -169,7 +170,7 @@ async function ask(question) {
   const context = history.slice(-8);
 
   try {
-    const response = await fetch('/api/chat', {
+    const response = await fetch(`${API_BASE_URL}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, history: context }),
@@ -222,7 +223,7 @@ clearButton.addEventListener('click', () => {
   addMessage('assistant', 'Hi! I can help you explore KLU admissions. What would you like to know?');
 });
 
-fetch('/api/health')
+fetch(`${API_BASE_URL}/api/health`)
   .then((response) => response.json())
   .then((state) => {
     statusText.textContent = state.ready ? 'Ready to help' : 'Setup needed';

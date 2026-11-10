@@ -8,6 +8,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -43,6 +44,28 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="KLU Admissions Assistant", version="1.0.0", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=FRONTEND), name="static")
+
+# A separately hosted frontend (for example, on Vercel) needs permission to
+# call this API. Set FRONTEND_ORIGINS in Render to its exact site origin(s),
+# separated by commas.
+default_origins = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "https://admission-and-fee-faq-assistant.onrender.com",
+]
+configured_origins = os.getenv("FRONTEND_ORIGINS", "")
+allowed_origins = default_origins + [
+    origin.strip().rstrip("/")
+    for origin in configured_origins.split(",")
+    if origin.strip()
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
+)
 
 
 class ChatTurn(BaseModel):
@@ -83,3 +106,8 @@ async def chat(request: ChatRequest) -> dict[str, object]:
         return await run_in_threadpool(assistant.answer, message, history)
     except Exception as error:
         raise HTTPException(status_code=502, detail=f"The assistant could not reach Gemini or the knowledge index: {error}") from error
+
+
+# Also serve frontend files from their normal paths so this same `frontend`
+# folder can be deployed as a standalone static site.
+app.mount("/", StaticFiles(directory=FRONTEND), name="frontend")
