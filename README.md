@@ -77,38 +77,14 @@ uvicorn backend.main:app --reload
 
 Open <http://127.0.0.1:8000>. On the first start, the workbook is embedded and saved in `data/chroma_db/`. Later starts reuse the index unless the workbook changes. If Gemini reports an embedding rate limit, indexing waits for the retry time and can resume missing rows on the next launch.
 
-## Deploy on Render
 
-Create a **Web Service** from the GitHub repository and deploy the `main` branch. The `.python-version` file pins Python 3.11.11 so Render does not silently use a newer runtime. Use these settings:
-
-| Render setting | Value |
-|---|---|
-| Runtime | Python |
-| Root directory | Leave blank (repository root) |
-| Build command | `pip install -r requirements.txt` |
-| Start command | `uvicorn backend.main:app --host 0.0.0.0 --port $PORT` |
-
-Add these environment variables in the Render service settings:
-
-| Key | Value |
 |---|---|
 | `GEMINI_API_KEY` | Your Gemini API key; enter it as a secret in Render, not in GitHub |
 | `GEMINI_MODEL` | `gemini-3.5-flash-lite` |
 | `GEMINI_EMBEDDING_MODEL` | `gemini-embedding-001` |
 | `CHROMA_PATH` | `/var/data/chroma_db` when using the persistent disk below |
 
-For ChromaDB to keep its index across deployments, attach a Render persistent disk mounted at `/var/data`. Persistent disks are available on paid web services. Without a disk, Render's filesystem is temporary: the app can lose the index on restart or redeploy and will need to embed the workbook again. The code defaults to `data/chroma_db` for local development and reads `CHROMA_PATH` when it is set on Render.
-
-After deployment, open the service URL and check `/api/health`. A ready response means the workbook index loaded successfully. The first index build can take time because Gemini must create embeddings for the workbook rows.
-
-## Review questions to prepare for
-
-- **What is RAG?** Retrieve relevant facts from a knowledge source, then use a language model to write an answer grounded in those facts.
-- **What is an embedding?** A list of numbers that represents the meaning of a piece of text, so similar questions and facts can be matched.
-- **What is a chunk in this project?** One non-empty row from the Excel workbook, with its column labels and source sheet attached.
-- **What does ChromaDB do?** Saves the chunks' embeddings and searches for the closest matches to a student's question.
-- **How does the answer stay traceable?** Each retrieved chunk includes its sheet and row metadata, which the API returns as sources.
-
+**live:** https://klu-2a.vercel.app/
 ## Workbook sheets
 
 The Excel file contains university details, programs, scholarships, hostel options, FAQs, and Q&A training pairs. The index includes rows from all sheets.
